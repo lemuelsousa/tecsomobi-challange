@@ -3,5 +3,15 @@ content-type: application/json
 
 ###
 
-GET http://localhost:3000/users HTTP/1.1
+GET http://localhost:3000/api/users HTTP/1.1
 content-type: application/json
+
+###
+POST http://localhost:3000/api/users HTTP/1.1
+content-type: application/json
+
+{
+    "name":"lemuel de sousa",
+    "email": "lemuel@email.com",
+    "password": "senha"
+}
