@@ -7,6 +7,13 @@ interface CreateUserDTO {
   password: string;
 }
 
+interface UpdateUserDTO {
+  id: number;
+  name?: string;
+  email?: string;
+  password?: string;
+}
+
 export function createUser(data: CreateUserDTO): User {
   const existing = db
     .prepare("SELECT * FROM users WHERE email = ?")
@@ -25,17 +32,42 @@ export function createUser(data: CreateUserDTO): User {
   return user;
 }
 
+export function updateUser(data: UpdateUserDTO): User {
+  const existing = db.prepare("SELECT * FROM users WHERE id = ?").get(data.id);
+  if (!existing) throw new Error("User not found.");
+
+  const stmt = db.prepare(
+    `UPDATE users SET 
+      name = COALESCE(?, name), 
+      email = COALESCE(?, email), 
+      password = COALESCE(?, password) 
+    WHERE id = ?`
+  );
+  stmt.run(data.name, data.email, data.password, data.id);
+
+  const updatedUser = db
+    .prepare("SELECT * FROM users WHERE id = ?")
+    .get(data.id) as User;
+  return updatedUser;
+}
+
 export function getUserById(id: number): User | null {
-  const user = db.prepare("SELECT * FROM users WHERE id = ?").get(id) as User | null;
+  const user = db
+    .prepare("SELECT * FROM users WHERE id = ?")
+    .get(id) as User | null;
   return user;
 }
 
-export function listUsers(page: number, limit: number): { users: User[]; total: number } {
+export function listUsers(
+  page: number,
+  limit: number
+): { users: User[]; total: number } {
   const offset = (page - 1) * limit;
 
-  const users = db.prepare("SELECT * FROM users LIMIT ? OFFSET ?").all(limit, offset) as User[];
+  const users = db
+    .prepare("SELECT * FROM users LIMIT ? OFFSET ?")
+    .all(limit, offset) as User[];
   const total = db.prepare("SELECT COUNT(*) as count FROM users").get().count;
-
 
   return { users, total };
 }
