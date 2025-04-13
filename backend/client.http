@@ -3,6 +3,11 @@ content-type: application/json
 
 ###
 
+GET http://localhost:3000/api/users/1 HTTP/1.1
+content-type: application/json
+
+###
+
 GET http://localhost:3000/api/users HTTP/1.1
 content-type: application/json
 

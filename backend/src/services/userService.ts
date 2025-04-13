@@ -14,6 +14,9 @@ interface UpdateUserDTO {
   password?: string;
 }
 
+// Define the expected result type
+type UserCountResult = { count: number };
+
 export function createUser(data: CreateUserDTO): User {
   const existing = db
     .prepare("SELECT * FROM users WHERE email = ?")
@@ -67,7 +70,9 @@ export function listUsers(
   const users = db
     .prepare("SELECT * FROM users LIMIT ? OFFSET ?")
     .all(limit, offset) as User[];
-  const total = db.prepare("SELECT COUNT(*) as count FROM users").get().count;
+  const total = (
+    db.prepare("SELECT COUNT(*) as count FROM users").get() as UserCountResult
+  ).count;
 
   return { users, total };
 }

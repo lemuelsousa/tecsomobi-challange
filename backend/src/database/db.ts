@@ -1,19 +1,17 @@
+import Database from "better-sqlite3";
 import fs from "fs/promises";
 import path from "path";
-import Database from "better-sqlite3";
-import { fileURLToPath } from "url";
 
-export const db = new Database(process.env.DB_PATH || "/data/db.sqlite");
+import type { Database as BetterSqlite3Database } from "better-sqlite3";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+export const db: BetterSqlite3Database = new Database("database.db", {
+  verbose: console.log,
+  fileMustExist: false,
+});
+
 
 export async function initializeDatabase() {
   const schemaPath = path.join(__dirname, "schemas", "users.sql");
   const schema = await fs.readFile(schemaPath, "utf8");
   db.exec(schema);
-
-  const seedPath = path.join(__dirname, "schemas", "seed.sql");
-  const seed = await fs.readFile(seedPath, "utf8");
-  db.exec(seed);
 }

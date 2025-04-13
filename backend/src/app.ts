@@ -1,9 +1,10 @@
 import express from "express";
 import { initializeDatabase } from "./database/db";
-import userRoutes from './routes/users';
+import userRoutes from './routes/users'
+
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 app.use(express.json());
 
