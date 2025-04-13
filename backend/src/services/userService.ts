@@ -24,3 +24,18 @@ export function createUser(data: CreateUserDTO): User {
 
   return user;
 }
+
+export function getUserById(id: number): User | null {
+  const user = db.prepare("SELECT * FROM users WHERE id = ?").get(id) as User | null;
+  return user;
+}
+
+export function listUsers(page: number, limit: number): { users: User[]; total: number } {
+  const offset = (page - 1) * limit;
+
+  const users = db.prepare("SELECT * FROM users LIMIT ? OFFSET ?").all(limit, offset) as User[];
+  const total = db.prepare("SELECT COUNT(*) as count FROM users").get().count;
+
+
+  return { users, total };
+}

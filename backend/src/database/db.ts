@@ -12,4 +12,8 @@ export async function initializeDatabase() {
   const schemaPath = path.join(__dirname, "schemas", "users.sql");
   const schema = await fs.readFile(schemaPath, "utf8");
   db.exec(schema);
+
+  const seedPath = path.join(__dirname, "schemas", "seed.sql");
+  const seed = await fs.readFile(seedPath, "utf8");
+  db.exec(seed);
 }
