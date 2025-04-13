@@ -1,0 +1,18 @@
+app = "tecsomobi-challenge"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "3000"
+  DB_PATH = "/data/db.sqlite"
+
+[mounts]
+  source = "data"
+  destination = "/data"
+
+[checks]
+  [checks.http]
+    path = "/health"
+    interval = "15s"
+    timeout = "2s"
