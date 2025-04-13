@@ -1,10 +1,8 @@
-import Database from "better-sqlite3";
+import Database, { Database as DatabaseType } from "better-sqlite3";
 import fs from "fs/promises";
 import path from "path";
 
-import type { Database as BetterSqlite3Database } from "better-sqlite3";
-
-export const db: BetterSqlite3Database = new Database("database.db", {
+export const db: DatabaseType = new Database("database.db", {
   verbose: console.log,
   fileMustExist: false,
 });

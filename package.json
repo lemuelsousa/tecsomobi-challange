@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "build": "tsc"
+  },
   "devDependencies": {
     "install": "^0.13.0",
     "npm": "^11.3.0"

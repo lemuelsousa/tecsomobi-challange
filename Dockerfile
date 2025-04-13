@@ -28,4 +28,4 @@ COPY --from=base /usr/src/app/node_modules ./node_modules
 EXPOSE 3000
 
 # Set the default command to run the app
-CMD ["node", "dist/app.ts"]
+CMD ["node", "dist/app.js"]
