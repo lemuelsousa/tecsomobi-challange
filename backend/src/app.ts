@@ -9,8 +9,8 @@ app.use(express.json());
 
 initializeDatabase();
 
-app.get('/', (req, res) => {
-    res.json( {message: 'hello, world'} );
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'healthy' });
 });
 
 app.use('/api', userRoutes);

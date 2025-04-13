@@ -3,7 +3,7 @@ import path from "path";
 import Database from "better-sqlite3";
 import { fileURLToPath } from "url";
 
-export const db = new Database("db.sqlite");
+export const db = new Database(process.env.DB_PATH || "/data/db.sqlite");
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
