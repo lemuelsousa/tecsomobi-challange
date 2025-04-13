@@ -71,3 +71,10 @@ export function listUsers(
 
   return { users, total };
 }
+
+export function deleteUser(id: number): void {
+  const existing = db.prepare("SELECT * FROM users WHERE id = ?").get(id);
+  if (!existing) throw new Error("User not found.");
+
+  db.prepare("DELETE FROM users WHERE id = ?").run(id);
+}
