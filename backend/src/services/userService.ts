@@ -14,7 +14,7 @@ export class ServiceError extends Error {
   }
 }
 
-export function createUser(data: CreateUserDTO): User {
+export async function createUser(data: CreateUserDTO): Promise<User> {
   try {
     const existing = db
       .prepare("SELECT * FROM users WHERE email = ?")
@@ -37,12 +37,17 @@ export function createUser(data: CreateUserDTO): User {
   }
 }
 
-export function updateUser(data: UpdateUserDTO): User {
+export async function updateUser(data: UpdateUserDTO): Promise<User> {
   try {
-    const existing = db
+    var existing = db
       .prepare("SELECT * FROM users WHERE id = ?")
       .get(data.id);
     if (!existing) throw new ServiceError(404, "User not found.");
+
+    existing = db
+      .prepare("SELECT * FROM users WHERE email = ?")
+      .get(data.email);
+    if (existing) throw new ServiceError(400, "Email already registered.");
 
     const stmt = db.prepare(
       `UPDATE users SET 
@@ -59,11 +64,11 @@ export function updateUser(data: UpdateUserDTO): User {
     return updatedUser;
   } catch (err) {
     if (err instanceof ServiceError) throw err;
-    throw new ServiceError(500, "Failed to update user.");
+    throw new ServiceError(500, err.message);
   }
 }
 
-export function getUserById(id: number): User | null {
+export async function getUserById(id: number): Promise<User | null> {
   try {
     const user = db
       .prepare("SELECT * FROM users WHERE id = ?")
@@ -74,10 +79,10 @@ export function getUserById(id: number): User | null {
   }
 }
 
-export function listUsers(
+export async function listUsers(
   page: number,
   limit: number
-): { users: User[]; total: number } {
+): Promise<{ users: User[]; total: number }> {
   try {
     const offset = (page - 1) * limit;
 
@@ -94,7 +99,7 @@ export function listUsers(
   }
 }
 
-export function deleteUser(id: number): void {
+export async function deleteUser(id: number): Promise<void> {
   try {
     const existing = db.prepare("SELECT * FROM users WHERE id = ?").get(id);
     if (!existing) throw new ServiceError(404, "User not found.");

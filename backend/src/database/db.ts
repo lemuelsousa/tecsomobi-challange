@@ -7,7 +7,6 @@ export const db: DatabaseType = new Database("database.db", {
   fileMustExist: false,
 });
 
-
 export async function initializeDatabase() {
   const schemaPath = path.join(__dirname, "schemas", "users.sql");
   const schema = await fs.readFile(schemaPath, "utf8");
