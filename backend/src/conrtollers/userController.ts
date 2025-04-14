@@ -6,6 +6,25 @@ import {
   updateUser,
   deleteUser,
 } from "../services/userService";
+import { ServiceError } from "../services/userService";
+
+function handleError(err: unknown, res: Response) {
+  if (err instanceof ServiceError) {
+    res.status(err.statusCode).json({
+      error: {
+        code: err.statusCode,
+        message: err.message
+      },
+    });
+  } else {
+    res.status(500).json({
+      error: {
+        code: 500,
+        message: "Internal server error"
+      },
+    });
+  }
+}
 
 export async function createUserHandler(req: Request, res: Response) {
   const { name, email, password } = req.body;
@@ -13,12 +32,8 @@ export async function createUserHandler(req: Request, res: Response) {
   try {
     const user = createUser({ name, email, password });
     res.status(201).json(user);
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      res.status(400).json({ error: err.message });
-    } else {
-      res.status(500).json({ error: "Internal server error" });
-    }
+  } catch (err) {
+    handleError(err, res);
   }
 }
 
@@ -32,12 +47,8 @@ export async function getUserByIdHandler(req: Request, res: Response) {
     } else {
       res.status(200).json(user);
     }
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      res.status(400).json({ error: err.message });
-    } else {
-      res.status(500).json({ error: "Internal server error" });
-    }
+  } catch (err) {
+    handleError(err, res);
   }
 }
 
@@ -49,12 +60,8 @@ export async function listUsersHandler(req: Request, res: Response) {
     res
       .status(200)
       .json({ users, total, page: Number(page), limit: Number(limit) });
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      res.status(400).json({ error: err.message });
-    } else {
-      res.status(500).json({ error: "Internal server error" });
-    }
+  } catch (err) {
+    handleError(err, res);
   }
 }
 
@@ -65,12 +72,8 @@ export async function updateUserHandler(req: Request, res: Response) {
   try {
     const user = updateUser({ id: Number(id), name, email, password });
     res.status(200).json(user);
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      res.status(400).json({ error: err.message });
-    } else {
-      res.status(500).json({ error: "Internal server error" });
-    }
+  } catch (err) {
+    handleError(err, res);
   }
 }
 
@@ -80,11 +83,7 @@ export async function deleteUserHandler(req: Request, res: Response) {
   try {
     deleteUser(Number(id));
     res.status(200).json({ message: "User deleted successfully." });
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      res.status(400).json({ error: err.message });
-    } else {
-      res.status(500).json({ error: "Internal server error" });
-    }
+  } catch (err) {
+    handleError(err, res);
   }
 }
