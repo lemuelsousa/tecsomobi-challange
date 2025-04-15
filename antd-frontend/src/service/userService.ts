@@ -45,3 +45,12 @@ export const createUser = async (user: User): Promise<void> => {
     console.error(err);
   }
 };
+export async function deleteUser(userId: number): Promise<void> {
+  const response = await fetch(`${API_URL}/${userId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao deletar usuário.");
+  }
+}

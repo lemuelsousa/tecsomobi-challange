@@ -24,7 +24,7 @@ const UserPage: React.FC = () => {
   return (
     <>
       <UserForm onUserCreated={fetchUsers} />
-      <UserTable data={users} />
+      <UserTable data={users} onUserDeleted={fetchUsers} />
     </>
   );
 };

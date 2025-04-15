@@ -1,14 +1,25 @@
-import { Button, Space, Table } from "antd";
+import { Button, message, Space, Table } from "antd";
 import React from "react";
-import { User } from "../service/userService";
+import { deleteUser, User } from "../service/userService";
 
 const { Column } = Table;
 
 interface UserTableProps {
   data: User[];
+  onUserDeleted: () => void;
 }
 
-const UserTable: React.FC<UserTableProps> = ({ data }) => {
+const UserTable: React.FC<UserTableProps> = ({ data, onUserDeleted }) => {
+  const handleDelete = async (userId: number) => {
+    try {
+      await deleteUser(userId);
+      message.success("Usuário deletado com sucesso.");
+      onUserDeleted();
+    } catch (error) {
+      console.error("Erro ao deletar usuário: ", error);
+      message.error("Erro ao deletar usuário.");
+    }
+  };
   return (
     <Table<User> dataSource={data} rowKey="id">
       <Column title="Nome" dataIndex="name" key="name" />
@@ -28,7 +39,7 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
             <Button
               color="default"
               variant="dashed"
-              onClick={() => console.log("função pensente")}
+              onClick={() => handleDelete(Number(record.id))}
             >
               Apagar
             </Button>
