@@ -45,6 +45,7 @@ export const createUser = async (user: User): Promise<void> => {
     console.error(err);
   }
 };
+
 export async function deleteUser(userId: number): Promise<void> {
   const response = await fetch(`${API_URL}/${userId}`, {
     method: "DELETE",
@@ -52,5 +53,29 @@ export async function deleteUser(userId: number): Promise<void> {
 
   if (!response.ok) {
     throw new Error("Erro ao deletar usuário.");
+  }
+}
+
+export async function updateUser(
+  userId: number,
+  data: Partial<User>
+): Promise<User> {
+  try {
+    const res = await fetch(`${API_URL}/${userId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error.message);
+    }
+    return res.json();
+  } catch (err) {
+    console.error(err);
+    throw err;
   }
 }
