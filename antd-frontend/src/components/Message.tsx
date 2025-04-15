@@ -1,0 +1,33 @@
+import React from 'react';
+import { Button, message, Space } from 'antd';
+
+const MessageComponent: React.FC = () => {
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const success = () => {
+    messageApi.open({
+      type: 'success',
+      content: 'This is a success message',
+    });
+  };
+
+
+  const warning = () => {
+    messageApi.open({
+      type: 'warning',
+      content: 'This is a warning message',
+    });
+  };
+
+  return (
+    <>
+      {contextHolder}
+      <Space>
+        <Button onClick={success}>Success</Button>
+        <Button onClick={warning}>Warning</Button>
+      </Space>
+    </>
+  );
+};
+
+export default MessageComponent;
