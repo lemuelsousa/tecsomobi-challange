@@ -1,11 +1,12 @@
 import { message } from "antd";
 import React, { useEffect, useState } from "react";
-import { getUsers, User } from "../service/userService";
+import { createUser, getUsers, updateUser, User } from "../service/userService";
 import UserForm from "../components/UserForm";
 import UserTable from "../components/UserTable";
 
 const UserPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
 
   const fetchUsers = async () => {
     try {
@@ -17,14 +18,35 @@ const UserPage: React.FC = () => {
     }
   };
 
+  const handleSubmit = async (data: User) => {
+    if (editingUser?.id) {
+      await updateUser(editingUser.id, data);
+      setEditingUser(null);
+    } else await createUser(data);
+    console.log("reloading table data")
+    fetchUsers();
+  };
+
   useEffect(() => {
     fetchUsers();
   }, []);
 
+  const handleEditUser = async (user: User) => {
+    setEditingUser(user);
+  };
+
   return (
     <>
-      <UserForm onUserCreated={fetchUsers} />
-      <UserTable data={users} onUserDeleted={fetchUsers} />
+      <UserForm
+        initialValues={editingUser ?? undefined}
+        onSubmit={handleSubmit}
+        onFinish={() => setEditingUser(null)}
+      />
+      <UserTable
+        data={users}
+        onUserDeleted={fetchUsers}
+        onEditUser={handleEditUser}
+      />
     </>
   );
 };

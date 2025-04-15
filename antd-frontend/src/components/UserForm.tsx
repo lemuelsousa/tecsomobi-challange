@@ -1,73 +1,84 @@
-import React from "react";
-import type { FormProps } from "antd";
 import { Button, Form, Input, message } from "antd";
-import { createUser, User } from "../service/userService";
+import React, { useEffect } from "react";
+import { User } from "../service/userService";
+import Title from "antd/es/typography/Title";
 
 interface UserFormProps {
-  onUserCreated: () => void;
+  initialValues?: Partial<User>;
+  onSubmit: (data: User) => Promise<void>;
+  onFinish?: () => void;
 }
 
-const UserForm: React.FC<UserFormProps> = ({ onUserCreated }) => {
+const UserForm: React.FC<UserFormProps> = ({
+  initialValues,
+  onSubmit,
+  onFinish,
+}) => {
   const [form] = Form.useForm();
 
-  const onFinish: FormProps<User>["onFinish"] = async (data) => {
+  useEffect(() => {
+    form.setFieldsValue(initialValues);
+  }, [form, initialValues]);
+
+  const handleFinish = async (data: User) => {
     try {
-      await createUser(data);
-      message.success("Usuário criado com sucesso!");
+      await onSubmit(data);
       form.resetFields();
-      onUserCreated();
+      message.success("Usuário salvo com sucesso!");
+      onFinish?.();
     } catch (error) {
-      console.error("Erro ao criar usuário:", error);
-      message.error(error.message || "Erro ao criar usuário.");
+      console.error("Erro: ", error);
+      message.error(error.message || "Erro ao salvar usuário.");
     }
   };
 
-  const onFinishFailed: FormProps<User>["onFinishFailed"] = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
+  return (
+    <>
+      <Title level={3}>
+        {initialValues?.id ? "Editar Usuário" : "Cadastrar Usuário"}
+      </Title>
 
-  return ( 
-    <Form
-      form={form}
-      name="user-form"
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
-      style={{ maxWidth: 600 }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      autoComplete="off"
-    >
-      <Form.Item<User>
-        label="name"
-        name="name"
-        rules={[{ required: true, message: "Por favor insira um nome!" }]}
+      <Form
+        form={form}
+        name="user-form"
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
+        style={{ maxWidth: 600 }}
+        onFinish={handleFinish}
+        autoComplete="off"
       >
-        <Input />
-      </Form.Item>
+        <Form.Item<User>
+          label="name"
+          name="name"
+          rules={[{ required: true, message: "Por favor insira um nome!" }]}
+        >
+          <Input />
+        </Form.Item>
 
-      <Form.Item<User>
-        label="Email"
-        name="email"
-        rules={[
-          { required: true, message: "Por favor insira um email válido" },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item<User>
-        label="Password"
-        name="password"
-        rules={[{ required: true, message: "Por favor insira uma senha!" }]}
-      >
-        <Input.Password />
-      </Form.Item>
+        <Form.Item<User>
+          label="Email"
+          name="email"
+          rules={[
+            { required: true, message: "Por favor insira um email válido" },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item<User>
+          label="Password"
+          name="password"
+          rules={[{ required: true, message: "Por favor insira uma senha!" }]}
+        >
+          <Input.Password />
+        </Form.Item>
 
-      <Form.Item label={null}>
-        <Button type="primary" htmlType="submit">
-          Cadastrar
-        </Button>
-      </Form.Item>
-    </Form>
+        <Form.Item label={null}>
+          <Button type="primary" htmlType="submit">
+            {initialValues ? "Atualizar" : "Cadastrar"}
+          </Button>
+        </Form.Item>
+      </Form>
+    </>
   );
 };
 

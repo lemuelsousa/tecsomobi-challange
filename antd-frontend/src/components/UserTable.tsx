@@ -7,9 +7,14 @@ const { Column } = Table;
 interface UserTableProps {
   data: User[];
   onUserDeleted: () => void;
+  onEditUser: (user: User) => void;
 }
 
-const UserTable: React.FC<UserTableProps> = ({ data, onUserDeleted }) => {
+const UserTable: React.FC<UserTableProps> = ({
+  data,
+  onUserDeleted,
+  onEditUser,
+}) => {
   const handleDelete = async (userId: number) => {
     try {
       await deleteUser(userId);
@@ -32,7 +37,7 @@ const UserTable: React.FC<UserTableProps> = ({ data, onUserDeleted }) => {
             <Button
               color="blue"
               variant="solid"
-              onClick={() => console.log("função pendente")}
+              onClick={() => onEditUser(record)}
             >
               Editar
             </Button>
