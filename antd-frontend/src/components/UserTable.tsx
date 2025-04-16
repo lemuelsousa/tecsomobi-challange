@@ -1,6 +1,7 @@
-import { Button, message, Space, Table } from "antd";
+import { Button, Flex, Grid, message, Space, Table } from "antd";
 import React from "react";
 import { deleteUser, User } from "../service/userService";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 const { Column } = Table;
 
@@ -25,6 +26,10 @@ const UserTable: React.FC<UserTableProps> = ({
   onEditUser,
   messageApi,
 }) => {
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
+
   const handleDelete = async (userId: number) => {
     try {
       await deleteUser(userId);
@@ -36,44 +41,49 @@ const UserTable: React.FC<UserTableProps> = ({
     }
   };
   return (
-    <Table<User>
-      dataSource={data}
-      rowKey="id"
-      pagination={{
-        current: currentPage,
-        pageSize: pageSize,
-        total: total,
-        showSizeChanger: true,
-        onChange: onChangePage,
-        onShowSizeChange: onChangePage,
-      }}
-      scroll={{ x: "max-content" }}
-    >
-      <Column title="Nome" dataIndex="name" key="name" responsive={["md"]} />
-      <Column title="Email" dataIndex="email" key="email" />
-      <Column
-        title="Ação"
-        key="action"
-        render={(_, record: User) => (
-          <Space size="middle">
-            <Button
-              color="blue"
-              variant="solid"
-              onClick={() => onEditUser(record)}
-            >
-              Editar
-            </Button>
-            <Button
-              color="default"
-              variant="dashed"
-              onClick={() => handleDelete(Number(record.id))}
-            >
-              Apagar
-            </Button>
-          </Space>
-        )}
-      />
-    </Table>
+    <Flex style={{ overflowX: "auto" }}>
+      <Table<User>
+        dataSource={data}
+        rowKey="id"
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          total: total,
+          showSizeChanger: true,
+          onChange: onChangePage,
+          onShowSizeChange: onChangePage,
+        }}
+        scroll={{ x: "max-content" }}
+      >
+        <Column title="Nome" dataIndex="name" key="name" responsive={["md"]} />
+        <Column title="Email" dataIndex="email" key="email" />
+        <Column
+          title="Ação"
+          key="action"
+          render={(_, record: User) => (
+            <Space size="middle">
+              <Button
+                color="blue"
+                variant="solid"
+                onClick={() => onEditUser(record)}
+                icon={<EditOutlined />}
+              >
+                {!isMobile && "Editar"}
+              </Button>
+              <Button
+                color="red"
+                variant="dashed"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={() => handleDelete(Number(record.id))}
+              >
+                {!isMobile && "Apagar"}
+              </Button>
+            </Space>
+          )}
+        />
+      </Table>
+    </Flex>
   );
 };
 
