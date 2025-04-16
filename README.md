@@ -1,48 +1,113 @@
 # Tecsomobi Challenge - Gestor de Usuários
 
-Este repositório contem a minha resolução do desafio para a vaga de Desenvolvedor FullStack da Tecsomobi.
+Este repositório apresenta minha solução para o desafio técnico da vaga de Desenvolvedor FullStack da **Tecsomobi**.
 
-## ✨Funcionalidades do Backend
+## 📚 Visão Geral
 
-- CRUD completo de usuários (Criar, Listar, Atualizar, Deletar)
-- Paginação na listagem de usuários
-- Validação de dados com Zod
-- Tratamento centralizado de erros
-- Estrutura modular (services, models, rotas, etc.)
+O projeto é um **gestor de usuários** com backend em **Node.js + Express** e dois frontends distintos: um com **MUI** e outro com **Ant Design (Antd)**, ambos construídos com **React + Vite + TypeScript**. O repositório está organizado como um **monorepo** utilizando **npm workspaces**.
 
-## ✨ Funcionalidades dos Frontends
+---
 
-- ✅ Listagem de usuários
-- ✅ Cadastro de novos usuários
-- ✅ Validação de campos com `Zod`
-- ✅ Botões para edição e exclusão
+## 🧠 Funcionalidades
+
+### 🚀 Backend (Express + TypeScript)
+
+- ✅ CRUD completo de usuários (Criar, Listar, Atualizar, Remover)
+- ✅ Paginação de resultados
+- ✅ Validação de dados com [Zod](https://zod.dev/)
+- ✅ Tratamento centralizado de erros
+- ✅ Estrutura modular com separação de responsabilidades (`services`, `models`, `routes`, etc.)
+
+### 🎨 Frontends (MUI & Ant Design)
+
+- ✅ Listagem de usuários com dados paginados
+- ✅ Cadastro e edição de usuários
+- ✅ Exclusão com confirmação
+- ✅ Validação de formulários com [Zod](https://zod.dev/)
 - ✅ Integração com API REST via `fetch`
+
+---
 
 ## 📦 Tecnologias Utilizadas
 
+- [Node.js](https://nodejs.org/)
+- [Express](https://expressjs.com/)
+- [TypeScript](https://www.typescriptlang.org/)
 - [React](https://reactjs.org/)
 - [Vite](https://vitejs.dev/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [MUI](https://mui.com/)
+- [Material UI (MUI)](https://mui.com/)
 - [Ant Design (Antd)](https://ant.design/)
-- [Fetch API](https://developer.mozilla.org/pt-BR/docs/Web/API/Fetch_API)
+- [Zod](https://zod.dev/)
+- [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
 
-## 🔧 Como executar o projeto
+---
+
+## 🛠️ Como Executar o Projeto
 
 ### Pré-requisitos
 
-- [Node.js](https://nodejs.org/) (versão 16 ou superior)
-- [npm](https://www.npmjs.com/) ou [yarn](https://yarnpkg.com/)
+- Node.js v16 ou superior
+- npm ou yarn
 
 ### Passos
 
-- Para o backend siga as instruções em [backend](./backend/)
-- Para o frontend com `MUI` siga as instruções em [mui-frontend](./mui-frontend/)
-- Para o frontend com `Ant Design` siga as instruções em [antd-frontend](./antd-frontend/)
+1. Clone o repositório:
 
-## 🧑‍💻 Autor
+```bash
+git clone https://github.com/lemuelsousa/tecsomobi-challenge.git
+cd tecsomobi-challenge
+```
 
-Feito por [Lemuel de Sousa](https://github.com/lemuelsousa/)
+2. Instale as dependências com o npm:
 
-Melhorias:
-Configurar como monorepo
+```bash
+npm install
+```
+
+3. Inicie os projetos:
+
+```bash
+# Inicia backend, mui-frontend e antd-frontend simultaneamente
+npm run dev:all
+```
+
+> Ou, para iniciar individualmente:
+>
+> ```bash
+> npm run dev:backend
+> npm run dev:mui
+> npm run dev:antd
+> ```
+
+4. Acesse:
+   - Backend: `http://localhost:3000`
+   - MUI Frontend: `http://localhost:5173`
+   - Antd Frontend: `http://localhost:5174`
+
+---
+
+## 📁 Estrutura do Projeto
+
+```
+tecsomobi-challenge/
+├── backend/           # API Express
+├── mui-frontend/      # Interface com Material UI
+├── antd-frontend/     # Interface com Ant Design
+├── package.json       # Configuração principal com workspaces
+└── ...
+```
+
+---
+
+## 🔧 Melhorias Futuras
+
+- [x] Configurar estrutura monorepo com npm workspaces
+- [ ] Adicionar testes automatizados
+- [ ] Dockerizar o ambiente
+- [ ] CI/CD com GitHub Actions
+
+---
+
+## 👤 Autor
+
+Desenvolvido por [**Lemuel de Sousa**](https://github.com/lemuelsousa)

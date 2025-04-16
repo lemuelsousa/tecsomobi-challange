@@ -1,0 +1,18 @@
+{
+  "name": "tecsomobi-challenge",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "antd-frontend",
+    "mui-frontend"
+  ],
+  "scripts": {
+    "dev:backend": "npm --workspace backend run dev",
+    "dev:antd": "npm --workspace antd-frontend run dev",
+    "dev:mui": "npm --workspace mui-frontend run dev",
+    "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev:antd\" \"npm run dev:mui\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  }
+}
