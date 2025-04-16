@@ -1,18 +1,19 @@
 import { Button, Form, Input, message } from "antd";
 import React, { useEffect } from "react";
 import { User } from "../service/userService";
-import Title from "antd/es/typography/Title";
 
 interface UserFormProps {
   initialValues?: Partial<User>;
   onSubmit: (data: User) => Promise<void>;
   onFinish?: () => void;
+  messageApi: ReturnType<typeof message.useMessage>[0];
 }
 
 const UserForm: React.FC<UserFormProps> = ({
   initialValues,
   onSubmit,
   onFinish,
+  messageApi,
 }) => {
   const [form] = Form.useForm();
 
@@ -24,20 +25,16 @@ const UserForm: React.FC<UserFormProps> = ({
     try {
       await onSubmit(data);
       form.resetFields();
-      message.success("Usuário salvo com sucesso!");
+      messageApi.success("Usuário salvo com sucesso!");
       onFinish?.();
     } catch (error) {
-      console.error("Erro: ", error);
-      message.error(error.message || "Erro ao salvar usuário.");
+      console.error(error);
+      messageApi.error(error.message || "Erro ao salvar usuário.");
     }
   };
 
   return (
     <>
-      <Title level={3}>
-        {initialValues?.id ? "Editar Usuário" : "Cadastrar Usuário"}
-      </Title>
-
       <Form
         form={form}
         name="user-form"

@@ -6,28 +6,50 @@ const { Column } = Table;
 
 interface UserTableProps {
   data: User[];
+  total: number;
+  currentPage: number;
+  pageSize: number;
+  onChangePage: (page: number, pageSize: number) => void;
   onUserDeleted: () => void;
   onEditUser: (user: User) => void;
+  messageApi: ReturnType<typeof message.useMessage>[0];
 }
 
 const UserTable: React.FC<UserTableProps> = ({
   data,
+  total,
+  currentPage,
+  pageSize,
+  onChangePage,
   onUserDeleted,
   onEditUser,
+  messageApi,
 }) => {
   const handleDelete = async (userId: number) => {
     try {
       await deleteUser(userId);
-      message.success("Usuário deletado com sucesso.");
+      messageApi.success("Usuário deletado com sucesso.");
       onUserDeleted();
     } catch (error) {
       console.error("Erro ao deletar usuário: ", error);
-      message.error("Erro ao deletar usuário.");
+      messageApi.error("Erro ao deletar usuário.");
     }
   };
   return (
-    <Table<User> dataSource={data} rowKey="id">
-      <Column title="Nome" dataIndex="name" key="name" />
+    <Table<User>
+      dataSource={data}
+      rowKey="id"
+      pagination={{
+        current: currentPage,
+        pageSize: pageSize,
+        total: total,
+        showSizeChanger: true,
+        onChange: onChangePage,
+        onShowSizeChange: onChangePage,
+      }}
+      scroll={{ x: "max-content" }}
+    >
+      <Column title="Nome" dataIndex="name" key="name" responsive={["md"]} />
       <Column title="Email" dataIndex="email" key="email" />
       <Column
         title="Ação"

@@ -41,8 +41,9 @@ export const createUser = async (user: User): Promise<void> => {
       const errorData = await res.json();
       throw new Error(errorData.error.message);
     }
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
 };
 
