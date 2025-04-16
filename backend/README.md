@@ -1,9 +1,49 @@
-# backend (User API)
+# API de Gerenciamento de Usuários
 
-## Stack
-- **Node.js**: Runtime environment for executing JavaScript on the server.
-- **Express.js**: Web framework for building RESTful APIs.
-- **SQLite3**: SQLite database for storing user data.
+Uma API REST para gerenciamento de usuários utilizando Node.js, Express, TypeScript e SQLite.
 
-## Key Functionalities
-- **User Management**: Create, read, update, and delete users.
+## Tecnologias Utilizadas
+
+- Node.js
+- Express
+- TypeScript
+- SQLite (via better-sqlite3)
+- Zod (para validação de dados)
+
+## Como começar
+
+### Pré-requisitos
+
+- Node.js v16 ou superior
+- npm
+
+### Instalação
+
+```bash
+npm install
+```
+
+### Executando o projeto
+
+```bash
+npm run dev
+```
+
+A API será iniciada em: `http://localhost:3000`
+
+## Endpoints
+
+| Método | Endpoint         | Descrição              |
+|--------|------------------|------------------------|
+| GET    | api/users           | Lista usuários (paginado) |
+| GET    | api/users/:id       | Busca usuário por ID   |
+| POST   | api/users           | Cria novo usuário      |
+| PUT    | api/users/:id       | Atualiza usuário       |
+| DELETE | api/users/:id       | Deleta usuário         |
+
+## Pontos de melhorias
+
+- Adicionar tests unitários, de integração e e2e
+- Configurar docker
+- Implementar `bcrypt` ou similar para criptografia das senhas dos usuários.
+- O banco de dados é salvo no arquivo `./db.sqlite` na raiz do projeto.

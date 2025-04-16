@@ -1,4 +1,9 @@
-GET http://localhost:3000 HTTP/1.1
+GET http://localhost:3000/health HTTP/1.1
+content-type: application/json
+
+###
+
+GET http://localhost:3000/api/users/1 HTTP/1.1
 content-type: application/json
 
 ###
@@ -16,9 +21,9 @@ POST http://localhost:3000/api/users HTTP/1.1
 content-type: application/json
 
 {
-    "name":"lemuel de sousa",
-    "email": "lemuel@email.com",
-    "password": "senha"
+    "name": "tu",
+    "email": "tu@user.com",
+    "password": "123123"
 }
 
 ###
@@ -26,11 +31,11 @@ PUT http://localhost:3000/api/users/1 HTTP/1.1
 content-type: application/json
 
 {
-    "name": "updated name",
-    "email": "updated@email.com",
-    "password": "newpassword"
+    "name": "you",
+    "email": "you@user.com",
+    "password": "123123"
 }
 
 ###
-DELETE http://localhost:3000/api/users/1 HTTP/1.1
+DELETE http://localhost:3000/api/users/2 HTTP/1.1
 content-type: application/json

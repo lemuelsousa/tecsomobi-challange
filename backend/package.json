@@ -3,12 +3,6 @@
   "version": "1.0.0",
   "description": "an user api that perform CRUD operations",
   "main": "index.js",
-  "scripts": {
-    "build": "tsc",
-    "start": "node dist/app.ts",
-    "dev": "npx tsx --watch  src/app.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lemuelsousa/users-api.git"
@@ -21,11 +15,17 @@
   },
   "homepage": "https://github.com/lemuelsousa/users-api#readme",
   "dependencies": {
-    "express": "^5.1.0"
+    "better-sqlite3": "^11.9.1",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.24.0",
+    "@flydotio/dockerfile": "^0.7.10",
     "@ljharb/tsconfig": "^0.3.2",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/node": "^22.14.1",
     "eslint": "^9.24.0",
@@ -34,5 +34,14 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.29.1"
   },
-  "type": "module"
+  "scripts": {
+    "start": "node dist/app.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
+    "build": "tsc && npm run copy-schemas",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "copy-schemas": "npx copyfiles -u 2 src/database/schemas/*.sql dist/database/",
+    "seed": "ts-node src/database/loadseed.ts",
+    "test": "echo \"No test specified\" && exit 1"
+  }
 }

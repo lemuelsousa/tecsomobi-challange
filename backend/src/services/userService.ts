@@ -1,80 +1,115 @@
 import { db } from "../database/db";
 import { User } from "../models/User";
 
-interface CreateUserDTO {
-  name: string;
-  email: string;
-  password: string;
+type CountResult = { count: number };
+
+export class ServiceError extends Error {
+  statusCode: number;
+
+  constructor(statusCode: number = 400, message: string) {
+    super(message);
+    this.name = "ServiceError";
+    this.statusCode = statusCode;
+  }
 }
 
-interface UpdateUserDTO {
-  id: number;
-  name?: string;
-  email?: string;
-  password?: string;
+export async function createUser(
+  userData: Partial<Omit<User, "id" | "created_at" | "updated_at">>
+): Promise<User> {
+  try {
+    const { name, email, password } = userData;
+
+    const existing = email ? getUserByEmail(email) : null;
+    if (existing) throw new ServiceError(400, "Email já em uso.");
+
+    const stmt = db.prepare(
+      `INSERT INTO users (name, email, password) VALUES (?, ?, ?)`
+    );
+    const result = stmt.run(name, email, password);
+
+    const user = db
+      .prepare("SELECT * FROM users WHERE id = ?")
+      .get(result.lastInsertRowid) as User;
+
+    return user;
+  } catch (err) {
+    if (err instanceof ServiceError) throw err;
+    throw new ServiceError(500, "Falha ao criar usuário.");
+  }
 }
 
-export function createUser(data: CreateUserDTO): User {
-  const existing = db
-    .prepare("SELECT * FROM users WHERE email = ?")
-    .get(data.email);
-  if (existing) throw new Error("Email already registered.");
+export async function updateUser(
+  id: number,
+  userData: Partial<Omit<User, "id" | "created_at" | "updated_at">>
+): Promise<void> {
+  try {
+    const user = getUserById(id);
+    if (!user) {
+      throw new Error("Usuário não encontrado.");
+    }
 
-  const stmt = db.prepare(
-    `INSERT INTO users (name, email, password) VALUES (?, ?, ?)`
-  );
-  const result = stmt.run(data.name, data.email, data.password);
+    const { name, email, password } = userData;
 
-  const user = db
-    .prepare("SELECT * FROM users WHERE id = ?")
-    .get(result.lastInsertRowid) as User;
+    const stmt = db.prepare(
+      `UPDATE users SET 
+        name = COALESCE(?, name), 
+        email = COALESCE(?, email), 
+        password = COALESCE(?, password),
+        updated_at = CURRENT_TIMESTAMP 
+      WHERE id = ?`
+    );
 
-  return user;
+    stmt.run(name, email, password, id);
+  } catch (error) {
+    if (error instanceof ServiceError) throw error;
+    console.error("Erro inesperado ao atualizar usuário:", error);
+    throw new ServiceError(500, "Erro interno ao atualizar usuário.");
+  }
 }
 
-export function updateUser(data: UpdateUserDTO): User {
-  const existing = db.prepare("SELECT * FROM users WHERE id = ?").get(data.id);
-  if (!existing) throw new Error("User not found.");
-
-  const stmt = db.prepare(
-    `UPDATE users SET 
-      name = COALESCE(?, name), 
-      email = COALESCE(?, email), 
-      password = COALESCE(?, password) 
-    WHERE id = ?`
-  );
-  stmt.run(data.name, data.email, data.password, data.id);
-
-  const updatedUser = db
-    .prepare("SELECT * FROM users WHERE id = ?")
-    .get(data.id) as User;
-  return updatedUser;
+export async function getUserById(id: number): Promise<User | null> {
+  try {
+    const user = db
+      .prepare("SELECT * FROM users WHERE id = ?")
+      .get(id) as User | null;
+    return user;
+  } catch {
+    throw new ServiceError(500, "Falha ao buscar usuário.");
+  }
 }
 
-export function getUserById(id: number): User | null {
-  const user = db
-    .prepare("SELECT * FROM users WHERE id = ?")
-    .get(id) as User | null;
-  return user;
-}
-
-export function listUsers(
+export async function listUsers(
   page: number,
   limit: number
-): { users: User[]; total: number } {
-  const offset = (page - 1) * limit;
+): Promise<{ users: User[]; total: number }> {
+  try {
+    const offset = (page - 1) * limit;
 
-  const users = db
-    .prepare("SELECT * FROM users LIMIT ? OFFSET ?")
-    .all(limit, offset) as User[];
-  const total = db.prepare("SELECT COUNT(*) as count FROM users").get().count;
+    const users = db
+      .prepare("SELECT * FROM users LIMIT ? OFFSET ?")
+      .all(limit, offset) as User[];
+    const total = (
+      db.prepare("SELECT COUNT(*) as count FROM users").get() as CountResult
+    ).count;
 
-  return { users, total };
+    return { users, total };
+  } catch {
+    throw new ServiceError(500, "Falha ao listar usuários.");
+  }
 }
 
-export function deleteUser(id: number): void {
-  const existing = db.prepare("SELECT * FROM users WHERE id = ?").get(id);
-  if (!existing) throw new Error("User not found.");
+export async function deleteUser(id: number): Promise<void> {
+  try {
+    const existing = db.prepare("SELECT * FROM users WHERE id = ?").get(id);
+    if (!existing) throw new ServiceError(404, "Usuário não encontrado.");
 
-  db.prepare("DELETE FROM users WHERE id = ?").run(id);
+    db.prepare("DELETE FROM users WHERE id = ?").run(id);
+  } catch (err) {
+    if (err instanceof ServiceError) throw err;
+    throw new ServiceError(500, "Falha ao deletar usuário.");
+  }
+}
+
+function getUserByEmail(email: string): User {
+  return db.prepare("SELECT * FROM users WHERE email = ?").get(email) as User;
 }
