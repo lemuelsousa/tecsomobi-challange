@@ -60,7 +60,7 @@ export async function deleteUser(userId: number): Promise<void> {
 export async function updateUser(
   userId: number,
   data: Partial<User>
-): Promise<User> {
+): Promise<void> {
   try {
     const res = await fetch(`${API_URL}/${userId}`, {
       method: "PUT",
@@ -74,7 +74,6 @@ export async function updateUser(
       const errorData = await res.json();
       throw new Error(errorData.error.message);
     }
-    return res.json();
   } catch (err) {
     console.error(err);
     throw err;
