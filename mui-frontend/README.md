@@ -18,23 +18,6 @@ Este é um projeto frontend criado com **Vite + React + TypeScript** utilizando 
 - [TypeScript](https://www.typescriptlang.org/)
 - [MUI](https://mui.com/)
 - [Fetch API](https://developer.mozilla.org/pt-BR/docs/Web/API/Fetch_API)
-<!-- 
-## 📁 Estrutura do Projeto
-
-```
-src/
-├── components/
-│   ├── UserForm.tsx       # Formulário de cadastro e edição de usuários
-│   └── UserTable.tsx      # Tabela de listagem de usuários
-├── service/
-│   └── userService.ts     # Lógica para chamadas HTTP
-├── pages/
-│   └── UserPage.tsx       # Componente principal que integra a tabela e o formulário
-├── schemas/
-│   └── userSchema.ts      # Schema para validação de campos
-├── App.tsx
-└── main.tsx
-``` -->
 
 ## 🔧 Como executar o projeto
 
@@ -76,12 +59,6 @@ http://localhost:5173
 
 ## 🚧 Melhorias Futuras
 [ ] Adicionar testes e2e
-
-[ ] Refatorar Components
-
-[ ] Refatorar Handler do modo edição
-
-[ ] Responsividade para tabela: colunas e botões
 
 [ ] Consertar alerts/messages
 
