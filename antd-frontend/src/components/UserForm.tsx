@@ -1,4 +1,4 @@
-import { Button, Form, Input, message } from "antd";
+import { Button, Flex, Form, Input, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { User } from "../service/userService";
 
@@ -6,6 +6,7 @@ interface UserFormProps {
   initialValues?: Partial<User>;
   onSubmit: (data: User) => Promise<void>;
   onFinish?: () => void;
+  onCancel: () => void;
   messageApi: ReturnType<typeof message.useMessage>[0];
 }
 
@@ -14,6 +15,7 @@ const UserForm: React.FC<UserFormProps> = ({
   onSubmit,
   onFinish,
   messageApi,
+  onCancel,
 }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -44,9 +46,8 @@ const UserForm: React.FC<UserFormProps> = ({
       <Form
         form={form}
         name="user-form"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600 }}
+        wrapperCol={{ span: 16 }}
         onFinish={handleFinish}
         autoComplete="off"
         key={initialValues?.id || "new"}
@@ -77,9 +78,21 @@ const UserForm: React.FC<UserFormProps> = ({
         </Form.Item>
 
         <Form.Item label={null}>
-          <Button type="primary" htmlType="submit" loading={loading}>
-            {initialValues ? "Atualizar" : "Cadastrar"}
-          </Button>
+          <Flex gap={8} wrap>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              {initialValues ? "Atualizar" : "Cadastrar"}
+            </Button>
+            {initialValues && (
+              <Button
+                onClick={() => {
+                  form.resetFields();
+                  onCancel?.();
+                }}
+              >
+                Cancelar
+              </Button>
+            )}
+          </Flex>
         </Form.Item>
       </Form>
     </>

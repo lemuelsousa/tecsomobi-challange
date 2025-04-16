@@ -50,16 +50,17 @@ const UserPage: React.FC = () => {
 
   return (
     <>
-    {contextHolder}
+      {contextHolder}
       <Flex justify="center" align="center" vertical>
         <Card
           title={editingUser ? "Editar Usuário" : "Cadastrar Usuário"}
-          style={{ marginBottom: 24 }}
+          style={{ marginBottom: 24, maxWidth: 600, width: "100%" }}
         >
           <UserForm
             initialValues={editingUser ?? undefined}
             onSubmit={handleSubmit}
             onFinish={() => setEditingUser(null)}
+            onCancel={() => setEditingUser(null)}
             messageApi={messageApi}
           />
         </Card>
