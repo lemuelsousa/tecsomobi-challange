@@ -51,5 +51,6 @@ A API será iniciada em: `http://localhost:3000`
 
 ## Pontos de melhorias
 
+- Configurar docker
 - Implementar `bcrypt` ou similar para criptografia das senhas dos usuários.
 - O banco de dados é salvo no arquivo `./db.sqlite` na raiz do projeto.
