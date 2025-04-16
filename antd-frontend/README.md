@@ -70,16 +70,13 @@ yarn dev
 4. Acesse no navegador:
 
 ```
-http://localhost:5173
+http://localhost:5174
 ```
 
 ## 🚧 Melhorias Futuras
-[ ] 
+[ ] Adicionar testes e2e
 
 ## 🧑‍💻 Autor
 
 Feito por [Lemuel de Sousa](https://github.com/lemuelsousa/)
 
----
-
-```
