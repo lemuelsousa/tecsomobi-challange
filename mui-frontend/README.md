@@ -1,15 +1,8 @@
 # MUI - FRONTEND
 # Sobre o projeto
 
-Este é um projeto frontend criado com **Vite + React + TypeScript** utilizando o **Ant Design** como biblioteca de componentes visuais. O objetivo do sistema é permitir o cadastro e listagem de usuários com integração a uma API REST.
+Este é um projeto frontend criado com **Vite + React + TypeScript** utilizando o **Material UI** como biblioteca de componentes visuais. O objetivo do sistema é permitir o cadastro e listagem de usuários com integração a uma API REST.
 
-## ✨ Funcionalidades
-
-- ✅ Listagem de usuários
-- ✅ Cadastro de novos usuários
-- ✅ Validação de campos com `Zod`
-- ✅ Botões para edição e exclusão
-- ✅ Integração com API REST via `fetch`
 
 ## 📦 Tecnologias Utilizadas
 

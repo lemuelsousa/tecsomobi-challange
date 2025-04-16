@@ -2,14 +2,6 @@
 
 Uma API REST para gerenciamento de usuários utilizando Node.js, Express, TypeScript e SQLite.
 
-## Funcionalidades
-
-- CRUD completo de usuários (Criar, Listar, Atualizar, Deletar)
-- Paginação na listagem de usuários
-- Validação de dados com Zod
-- Tratamento centralizado de erros
-- Estrutura modular (services, models, rotas, etc.)
-
 ## Tecnologias Utilizadas
 
 - Node.js
@@ -22,7 +14,7 @@ Uma API REST para gerenciamento de usuários utilizando Node.js, Express, TypeSc
 
 ### Pré-requisitos
 
-- Node.js v18 ou superior
+- Node.js v16 ou superior
 - npm
 
 ### Instalação
