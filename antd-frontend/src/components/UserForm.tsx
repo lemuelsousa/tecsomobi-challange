@@ -1,5 +1,7 @@
 import { Button, Flex, Form, Input, message } from "antd";
 import React, { useEffect, useState } from "react";
+import { z } from "zod";
+import { userSchema } from "../schemas/userSchema";
 import { User } from "../service/userService";
 
 interface UserFormProps {
@@ -27,15 +29,28 @@ const UserForm: React.FC<UserFormProps> = ({
   const handleFinish = async (data: User) => {
     setLoading(true);
     try {
-      await onSubmit(data);
+      const parsed = userSchema.parse(data);
+      await onSubmit(parsed);
       form.resetFields();
       messageApi.success("Usuário salvo com sucesso!");
       onFinish?.();
     } catch (error) {
-      console.error(error);
-      const errorMessage =
-        error instanceof Error ? error.message : "Erro ao salvar usuário.";
-      messageApi.error(errorMessage);
+      if (error instanceof z.ZodError) {
+        const fieldErrors = error.flatten().fieldErrors;
+        Object.entries(fieldErrors).forEach(([field, messages]) => {
+          form.setFields([
+            {
+              name: field,
+              errors: messages as string[],
+            },
+          ]);
+        });
+      } else {
+        console.error(error);
+        const errorMessage =
+          error instanceof Error ? error.message : "Erro ao salvar usuário.";
+        messageApi.error(errorMessage);
+      }
     } finally {
       setLoading(false);
     }

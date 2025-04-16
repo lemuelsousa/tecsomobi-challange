@@ -6,7 +6,8 @@ Este é um projeto frontend criado com **Vite + React + TypeScript** utilizando 
 
 - ✅ Listagem de usuários
 - ✅ Cadastro de novos usuários
-- ✅ Botões para edição e exclusão (em desenvolvimento)
+- ✅ Validação de campos com `Zod`
+- ✅ Botões para edição e exclusão
 - ✅ Integração com API REST via `fetch`
 
 ## 📦 Tecnologias Utilizadas
@@ -22,12 +23,14 @@ Este é um projeto frontend criado com **Vite + React + TypeScript** utilizando 
 ```
 src/
 ├── components/
-│   ├── UserForm.tsx       # Formulário de cadastro de usuários
+│   ├── UserForm.tsx       # Formulário de cadastro e edição de usuários
 │   └── UserTable.tsx      # Tabela de listagem de usuários
 ├── service/
-│   └── userService.ts     # Lógica para chamadas HTTP (GET/POST)
+│   └── userService.ts     # Lógica para chamadas HTTP
 ├── pages/
 │   └── UserPage.tsx       # Componente principal que integra a tabela e o formulário
+├── schemas/
+│   └── userSchema.ts      # Schema para validação de campos
 ├── App.tsx
 └── main.tsx
 ```
@@ -71,11 +74,7 @@ http://localhost:5173
 ```
 
 ## 🚧 Melhorias Futuras
-
-- [ ] Implementar a exclusão de usuários
-- [ ] Implementar edição de dados
-- [ ] Adicionar paginação na tabela
-- [ ] Validação mais robusta no formulário
+[ ] 
 
 ## 🧑‍💻 Autor
 
