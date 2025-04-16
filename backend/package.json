@@ -41,6 +41,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "copy-schemas": "npx copyfiles -u 2 src/database/schemas/*.sql dist/database/",
+    "seed": "ts-node src/database/loadseed.ts",
     "test": "echo \"No test specified\" && exit 1"
   }
 }
