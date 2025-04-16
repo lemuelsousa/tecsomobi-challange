@@ -1,5 +1,5 @@
 import Database, { Database as DatabaseType } from "better-sqlite3";
-import fs from "fs/promises";
+import fs from "fs";
 import path from "path";
 
 export const db: DatabaseType = new Database("database.db", {
@@ -7,8 +7,8 @@ export const db: DatabaseType = new Database("database.db", {
   fileMustExist: false,
 });
 
-export async function initializeDatabase() {
+export function initializeDatabase() {
   const schemaPath = path.join(__dirname, "schemas", "users.sql");
-  const schema = await fs.readFile(schemaPath, "utf8");
+  const schema = fs.readFileSync(schemaPath, "utf8");
   db.exec(schema);
 }

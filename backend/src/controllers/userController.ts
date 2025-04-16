@@ -5,26 +5,51 @@ import {
   listUsers,
   updateUser,
   deleteUser,
+  ServiceError,
 } from "../services/userService";
-import { createUserSchema, updateUserSchema } from "../dto/User";
+import { createUserSchema, updateUserSchema } from "../schemas/userSchema";
 
-export async function createUserHandler(req: Request, res: Response, next: NextFunction) {
+export async function createUserHandler(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
-    const validatedData = createUserSchema.parse(req.body);
-    const user = await createUser(validatedData);
-    res.status(201).json(user);
+    const parse = createUserSchema.parse(req.body);
+    await createUser(parse);
+    res.status(201).send();
   } catch (err) {
     next(err);
   }
 }
 
-export async function getUserByIdHandler(req: Request, res: Response, next: NextFunction) {
+export async function updateUserHandler(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { id } = req.params;
+
+    const parsed = updateUserSchema.parse(req.body);
+    await updateUser(Number(id), parsed);
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getUserByIdHandler(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const { id } = req.params;
 
   try {
     const user = await getUserById(Number(id));
     if (!user) {
-      res.status(404).json({ error: "User not found" });
+      res.status(404).json({ error: "Usuário não encontrado." });
     } else {
       res.status(200).json(user);
     }
@@ -33,7 +58,11 @@ export async function getUserByIdHandler(req: Request, res: Response, next: Next
   }
 }
 
-export async function listUsersHandler(req: Request, res: Response, next: NextFunction) {
+export async function listUsersHandler(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const { page = 1, limit = 10 } = req.query;
 
   try {
@@ -46,25 +75,16 @@ export async function listUsersHandler(req: Request, res: Response, next: NextFu
   }
 }
 
-export async function updateUserHandler(req: Request, res: Response, next: NextFunction) {
-  try {
-    const validatedData = updateUserSchema.parse({
-      ...req.body,
-      id: Number(req.params.id),
-    });
-    const user = await updateUser(validatedData);
-    res.status(200).json(user);
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function deleteUserHandler(req: Request, res: Response, next: NextFunction) {
+export async function deleteUserHandler(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const { id } = req.params;
 
   try {
     await deleteUser(Number(id));
-    res.status(200).json({ message: "User deleted successfully." });
+    res.status(204).send();
   } catch (err) {
     next(err);
   }

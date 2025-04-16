@@ -27,7 +27,7 @@ export function errorHandler(
       },
     });
   } else {
-    console.error(err)
+    console.error(err);
     res.status(500).json({
       error: {
         code: 500,
