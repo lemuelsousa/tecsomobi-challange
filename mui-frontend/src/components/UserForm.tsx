@@ -1,164 +1,108 @@
-import { useState, useEffect, useCallback } from "react";
-import { TextField, Button, Box, Snackbar, Alert } from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  Box,
+} from "@mui/material";
+import { useEffect, useState } from "react";
 import { User } from "../types/User";
-import { createUser, ErrorResponse, updateUser } from "../service/userService";
-import { userSchema } from "../schemas/User";
+import { userSchema, UserSchema } from "../schemas/userSchema";
+import { ZodError } from "zod";
 
 interface Props {
-  selectedUser?: User;
-  onSave: () => void;
+  open: boolean;
+  onClose: () => void;
+  onSave: (user: User) => void;
+  user?: User;
 }
 
-export default function UserForm({ selectedUser, onSave }: Props) {
-  const [data, setData] = useState<User>({ name: "", email: "", password: "" });
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [snackbar, setSnackbar] = useState<{
-    open: boolean;
-    message: string;
-    severity: "error" | "success";
-  }>({
-    open: false,
-    message: "",
-    severity: "success",
+export default function UserFormDialog({ open, onClose, onSave, user }: Props) {
+  const [form, setForm] = useState<UserSchema>({
+    name: "",
+    email: "",
+    password: "",
   });
 
-  const clearData = () => setData({ name: "", email: "", password: "" });
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof UserSchema, string>>
+  >({});
 
   useEffect(() => {
-    if (selectedUser) setData(selectedUser);
-    else clearData();
-  }, [selectedUser]);
-
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setData({ ...data, [e.target.name]: e.target.value });
-      setErrors({ ...errors, [e.target.name]: "" }); // Clear error for the field being edited
-    },
-    [data, errors]
-  );
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const result = userSchema.safeParse(data);
-    if (!result.success) {
-      // Map validation errors to the errors state
-      const validationErrors: { [key: string]: string } = {};
-      result.error.errors.forEach((err) => {
-        if (err.path[0]) {
-          validationErrors[err.path[0]] = err.message;
-        }
-      });
-      setErrors(validationErrors);
-      return;
+    if (user) {
+      const { name, email, password } = user;
+      setForm({ name, email, password });
+    } else {
+      setForm({ name: "", email: "", password: "" });
     }
+    setErrors({});
+  }, [user]);
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+    setErrors({ ...errors, [name]: "" });
+  };
+
+  const handleSubmit = () => {
     try {
-      if (data.id) {
-        await updateUser(data);
-        clearData();
-        onSave();
-        setSnackbar({
-          open: true,
-          message: "Usuário atualizado com sucesso!",
-          severity: "success",
+      const parsed = userSchema.parse(form);
+      onSave(parsed);
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const fieldErrors: Partial<Record<keyof UserSchema, string>> = {};
+        err.errors.forEach(({ path, message }) => {
+          const field = path[0] as keyof UserSchema;
+          fieldErrors[field] = message;
         });
-        console.log("updated?")
-      } else {
-        await createUser(data);
-        clearData();
-        onSave();
-        setSnackbar({
-          open: true,
-          message: "Usuário criado com sucesso!",
-          severity: "success",
-        });
-        console.log("created")
-      }
-    } catch (error) {
-      if (error instanceof ErrorResponse) {
-        console.error(
-          `Error ${error.statusCode}: ${error.message}`,
-          error.details
-        );
-        setSnackbar({ open: true, message: error.message, severity: "error" }); // Error Snackbar
-      } else {
-        console.error(error);
-        setSnackbar({
-          open: true,
-          message: "Ocorreu um erro inesperado.",
-          severity: "error",
-        });
+        setErrors(fieldErrors);
       }
     }
-  };
-
-  const toggleSnackbar = () => {
-    setSnackbar({ ...snackbar, open: false });
-  };
-
-  const handleCancel = () => {
-    clearData();
-    onSave();
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4 }}>
-      <TextField
-        label="Nome"
-        name="name"
-        value={data.name}
-        onChange={handleChange}
-        fullWidth
-        sx={{ mb: 2 }}
-        required
-      />
-      <TextField
-        label="Email"
-        name="email"
-        value={data.email}
-        onChange={handleChange}
-        fullWidth
-        sx={{ mb: 2 }}
-        required
-        error={!!errors.email}
-        helperText={errors.email}
-      />
-      <TextField
-        id="password"
-        label="Password"
-        type="password"
-        name="password"
-        value={data.password}
-        onChange={handleChange}
-        required
-        error={!!errors.password}
-        helperText={errors.password}
-      />
-      <Button type="submit" variant="contained">
-        {data.id ? "Atualizar" : "Cadastrar"}
-      </Button>
-
-      {selectedUser && (
-        <Button onClick={handleCancel} variant="outlined" sx={{ ml: 2 }}>
-          Cancelar Edição
+    <Dialog open={open} onClose={onClose} fullWidth>
+      <DialogTitle>{user ? "Editar Usuário" : "Novo Usuário"}</DialogTitle>
+      <DialogContent>
+        <Box display="flex" flexDirection="column" gap={2} mt={1}>
+          <TextField
+            label="Nome"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            error={!!errors.name}
+            helperText={errors.name}
+            fullWidth
+          />
+          <TextField
+            label="Email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            error={!!errors.email}
+            helperText={errors.email}
+            fullWidth
+          />
+          <TextField
+            label="Senha"
+            type="password"
+            name="password"
+            value={form.password}
+            onChange={handleChange}
+            error={!!errors.password}
+            helperText={errors.password}
+            fullWidth
+          />
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Cancelar</Button>
+        <Button onClick={handleSubmit} variant="contained">
+          {user ? "Atualizar" : "Salvar"}
         </Button>
-      )}
-
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={toggleSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={toggleSnackbar}
-          severity={snackbar.severity}
-          sx={{ width: "100%" }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </Box>
+      </DialogActions>
+    </Dialog>
   );
 }

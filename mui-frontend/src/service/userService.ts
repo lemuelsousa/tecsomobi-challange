@@ -1,56 +1,81 @@
-import { User } from "../types/User";
+export interface User {
+  id?: number;
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface PaginatedUsers {
+  users: User[];
+  total: number;
+  page: number;
+  limit: number;
+}
 
 const API_URL = "http://localhost:3000/api/users";
 
-export class ErrorResponse extends Error {
-  constructor(
-    public statusCode: number,
-    public message: string,
-    public details?: [] // Optional field for additional error details
-  ) {
-    super(message);
-    this.name = "ErrorResponse";
-  }
-}
+export const getUsers = async (
+  page = 1,
+  limit = 10
+): Promise<PaginatedUsers> => {
+  const response = await fetch(`${API_URL}/?page=${page}&limit=${limit}`);
 
-async function handleResponse(response: Response) {
-  const json = await response.json();
   if (!response.ok) {
-    // console.error(json);
-    throw new ErrorResponse(
-      response.status,
-      json.error.message || "An error occurred",
-      json
-    );
+    throw new Error("Erro ao buscar usuários.");
   }
-  return json;
-}
 
-export async function getUsers(): Promise<User[]> {
-  const res = await fetch(API_URL);
-  return await handleResponse(res);
-}
+  return response.json();
+};
 
-export async function createUser(user: User): Promise<void> {
-  const res = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(user),
-  });
-  await handleResponse(res);
-}
+export const createUser = async (user: User): Promise<void> => {
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
 
-export async function updateUser(user: User): Promise<void> {
-  const res = await fetch(`${API_URL}/${user.id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(user),
-  });
-  handleResponse(res);
-}
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error.message);
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 
-export async function deleteUser(id: number): Promise<void> {
-  await fetch(`${API_URL}/${id}`, {
+export async function deleteUser(userId: number): Promise<void> {
+  const response = await fetch(`${API_URL}/${userId}`, {
     method: "DELETE",
   });
+
+  if (!response.ok) {
+    throw new Error("Erro ao deletar usuário.");
+  }
+}
+
+export async function updateUser(
+  userId: number,
+  data: Partial<User>
+): Promise<void> {
+  try {
+    const res = await fetch(`${API_URL}/${userId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error.message);
+    }
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }

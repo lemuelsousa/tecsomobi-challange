@@ -1,15 +1,12 @@
-import { Container, Typography } from '@mui/material'
-import UserTable from './components/UserTable'
+import { Container } from "@mui/material";
+import UserTable from "./components/UserTable";
 
 function App() {
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>
-        Gerenciamento de Usuários
-      </Typography>
+    <Container maxWidth="md">
       <UserTable />
     </Container>
-  )
+  );
 }
 
-export default App
+export default App;

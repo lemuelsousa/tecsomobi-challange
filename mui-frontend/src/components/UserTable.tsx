@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -8,43 +7,84 @@ import {
   TableRow,
   Paper,
   IconButton,
+  Pagination,
+  Box,
+  Typography,
+  Button,
 } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
-import UserForm from "./UserForm";
+import { useEffect, useState } from "react";
 import { User } from "../types/User";
 import {
-  deleteUser as deleteUserService,
   getUsers,
+  createUser,
+  updateUser,
+  deleteUser,
 } from "../service/userService";
+import UserForm from "./UserForm";
+import { Edit, Delete } from "@mui/icons-material";
 
 export default function UserTable() {
   const [users, setUsers] = useState<User[]>([]);
-  const [editingUser, setEditingUser] = useState<User | undefined>(undefined);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(5);
+  const [totalPages, setTotalPages] = useState(1);
+  const [openForm, setOpenForm] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | undefined>();
 
-  const fetchUsers = async () => {
-    const data = (await getUsers()) as { users: User[] };
+  const loadUsers = async () => {
+    const data = await getUsers(page, limit);
     setUsers(data.users);
-  };
-
-  const deleteUser = async (id: number) => {
-    await deleteUserService(id);
-    fetchUsers();
+    setTotalPages(Math.ceil(data.total / limit));
   };
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    loadUsers();
+  }, [page]);
+
+  const handleSave = async (user: User) => {
+    try {
+      if (user.id) {
+        await updateUser(user.id, user);
+      } else {
+        await createUser(user);
+      }
+      setOpenForm(false);
+      setSelectedUser(undefined);
+      await loadUsers();
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (confirm("Tem certeza que deseja deletar este usuário?")) {
+      await deleteUser(id);
+      await loadUsers();
+    }
+  };
 
   return (
-    <>
-      <UserForm selectedUser={editingUser} onSave={fetchUsers} />
+    <Box>
+      <Box display="flex" justifyContent="space-between" mb={2}>
+        <Typography variant="h6">Gestão de usuários</Typography>
+        <Button
+          variant="contained"
+          onClick={() => {
+            setSelectedUser(undefined);
+            setOpenForm(true);
+          }}
+        >
+          Novo Usuário
+        </Button>
+      </Box>
+
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Nome</TableCell>
               <TableCell>Email</TableCell>
-              <TableCell>Ações</TableCell>
+              <TableCell align="right">Ações</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -52,16 +92,19 @@ export default function UserTable() {
               <TableRow key={user.id}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>
+                <TableCell align="right">
                   <IconButton
-                    onClick={() => setEditingUser(user)}
                     color="primary"
+                    onClick={() => {
+                      setSelectedUser(user);
+                      setOpenForm(true);
+                    }}
                   >
                     <Edit />
                   </IconButton>
                   <IconButton
-                    onClick={() => deleteUser(user.id!)}
                     color="error"
+                    onClick={() => handleDelete(user.id!)}
                   >
                     <Delete />
                   </IconButton>
@@ -70,7 +113,21 @@ export default function UserTable() {
             ))}
           </TableBody>
         </Table>
+        <Box display="flex" justifyContent="center" p={2}>
+          <Pagination
+            count={totalPages}
+            page={page}
+            onChange={(_, newPage) => setPage(newPage)}
+          />
+        </Box>
       </TableContainer>
-    </>
+
+      <UserForm
+        open={openForm}
+        onClose={() => setOpenForm(false)}
+        onSave={handleSave}
+        user={selectedUser}
+      />
+    </Box>
   );
 }
