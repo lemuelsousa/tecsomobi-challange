@@ -80,7 +80,7 @@ npm run dev:all
 > ```
 
 4. Acesse:
-   - Backend: `http://localhost:3000`
+   - Backend: `http://localhost:3000/api/users`
    - MUI Frontend: `http://localhost:5173`
    - Antd Frontend: `http://localhost:5174`
 
