@@ -1,5 +1,5 @@
 import { Button, Form, Input, message } from "antd";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { User } from "../service/userService";
 
 interface UserFormProps {
@@ -16,12 +16,14 @@ const UserForm: React.FC<UserFormProps> = ({
   messageApi,
 }) => {
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     form.setFieldsValue(initialValues);
   }, [form, initialValues]);
 
   const handleFinish = async (data: User) => {
+    setLoading(true);
     try {
       await onSubmit(data);
       form.resetFields();
@@ -29,7 +31,11 @@ const UserForm: React.FC<UserFormProps> = ({
       onFinish?.();
     } catch (error) {
       console.error(error);
-      messageApi.error(error.message || "Erro ao salvar usuário.");
+      const errorMessage =
+        error instanceof Error ? error.message : "Erro ao salvar usuário.";
+      messageApi.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,9 +49,10 @@ const UserForm: React.FC<UserFormProps> = ({
         style={{ maxWidth: 600 }}
         onFinish={handleFinish}
         autoComplete="off"
+        key={initialValues?.id || "new"}
       >
         <Form.Item<User>
-          label="name"
+          label="Nome"
           name="name"
           rules={[{ required: true, message: "Por favor insira um nome!" }]}
         >
@@ -62,7 +69,7 @@ const UserForm: React.FC<UserFormProps> = ({
           <Input />
         </Form.Item>
         <Form.Item<User>
-          label="Password"
+          label="Senha"
           name="password"
           rules={[{ required: true, message: "Por favor insira uma senha!" }]}
         >
@@ -70,7 +77,7 @@ const UserForm: React.FC<UserFormProps> = ({
         </Form.Item>
 
         <Form.Item label={null}>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={loading}>
             {initialValues ? "Atualizar" : "Cadastrar"}
           </Button>
         </Form.Item>
