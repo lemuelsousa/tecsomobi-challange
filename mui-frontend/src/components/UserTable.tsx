@@ -36,12 +36,14 @@ export default function UserTable() {
     loadUsers();
   }, [page]);
 
-  const handleSave = async (user: User) => {
+  const handleSubmit = async (data: User) => {
     try {
-      if (user.id) {
-        await updateUser(user.id, user);
+      if (selectedUser?.id) {
+        await updateUser(selectedUser.id, data);
+        alert("usuário atualizado com sucesso.");
       } else {
-        await createUser(user);
+        await createUser(data);
+        alert("usuário criado com sucesso.");
       }
       setOpenForm(false);
       setSelectedUser(undefined);
@@ -120,7 +122,7 @@ export default function UserTable() {
       <UserForm
         open={openForm}
         onClose={() => setOpenForm(false)}
-        onSave={handleSave}
+        onSubmit={handleSubmit}
         user={selectedUser}
       />
     </Box>

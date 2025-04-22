@@ -15,11 +15,19 @@ import { ZodError } from "zod";
 interface Props {
   open: boolean;
   onClose: () => void;
-  onSave: (user: User) => void;
+  onSubmit: (user: User) => void;
   user?: User;
 }
 
-export default function UserFormDialog({ open, onClose, onSave, user }: Props) {
+export default function UserFormDialog({
+  open,
+  onClose,
+  onSubmit,
+  user,
+}: Props) {
+  console.log("user: ", user);
+  console.log("onSubmit: ", onSubmit);
+
   const [form, setForm] = useState<UserInput>({
     name: "",
     email: "",
@@ -48,8 +56,8 @@ export default function UserFormDialog({ open, onClose, onSave, user }: Props) {
 
   const handleSubmit = () => {
     try {
-      const parsed = userSchema.parse(form);
-      onSave(parsed);
+      const parsed = userSchema.parse(form);    
+      onSubmit(parsed);
     } catch (err) {
       if (err instanceof ZodError) {
         const fieldErrors: Partial<Record<keyof UserInput, string>> = {};
