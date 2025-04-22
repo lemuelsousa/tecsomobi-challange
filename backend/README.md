@@ -7,8 +7,8 @@ Uma API REST para gerenciamento de usuários utilizando Node.js, Express, TypeSc
 - Node.js
 - Express
 - TypeScript
-- SQLite (via better-sqlite3)
-- Zod (para validação de dados)
+- SQLite
+- Zod
 
 ## Como começar
 
@@ -26,8 +26,12 @@ npm install
 ### Executando o projeto
 
 ```bash
-npm run dev
+npm run build
+npm run start
+npm run seed # Popula o banco de dados (Opicional)
 ```
+
+
 
 A API será iniciada em: `http://localhost:3000`
 
@@ -43,6 +47,6 @@ A API será iniciada em: `http://localhost:3000`
 
 ## Pontos de melhorias
 
-- Adicionar tests unitários, de integração e e2e
-- Configurar docker
-- Implementar `bcrypt` ou similar para criptografia das senhas dos usuários.
+- [ ] Adicionar tests unitários, de integração e e2e
+- [ ] Configurar docker
+- [ ] Implementar `bcrypt` ou similar para criptografia das senhas dos usuários.

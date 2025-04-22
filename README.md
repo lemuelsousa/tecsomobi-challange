@@ -67,14 +67,18 @@ npm install
 3. Inicie os projetos:
 
 ```bash
+npm run build
+
 # Inicia backend, mui-frontend e antd-frontend simultaneamente
-npm run dev:all
+npm run start:all
 ```
+
+
 
 > Ou, para iniciar individualmente:
 >
 > ```bash
-> npm run dev:backend
+> npm run start:backend
 > npm run dev:mui
 > npm run dev:antd
 > ```

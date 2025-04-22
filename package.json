@@ -8,11 +8,13 @@
     "shared"
   ],
   "scripts": {
+    "start:backend": "npm --workspace backend run start",
+    "start:all": "concurrently \"npm run start:backend\" \"npm run dev:antd\" \"npm run dev:mui\"",
     "dev:backend": "npm --workspace shared run build && npm --workspace backend run dev",
     "dev:antd": "npm --workspace antd-frontend run dev",
     "dev:mui": "npm --workspace mui-frontend run dev",
     "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev:antd\" \"npm run dev:mui\"",
-    "build": "tsc -b",
+    "build": "tsc -b && npm --workspace backend run copy-schemas",
     "clean": "tsc -b --clean"
   },
   "devDependencies": {
