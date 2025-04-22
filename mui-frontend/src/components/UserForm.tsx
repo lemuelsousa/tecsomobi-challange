@@ -8,8 +8,8 @@ import {
   Box,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { User } from "../types/User";
-import { userSchema, UserSchema } from "../schemas/userSchema";
+import { User } from "shared";
+import { UserInput, userSchema } from "shared";
 import { ZodError } from "zod";
 
 interface Props {
@@ -20,14 +20,14 @@ interface Props {
 }
 
 export default function UserFormDialog({ open, onClose, onSave, user }: Props) {
-  const [form, setForm] = useState<UserSchema>({
+  const [form, setForm] = useState<UserInput>({
     name: "",
     email: "",
     password: "",
   });
 
   const [errors, setErrors] = useState<
-    Partial<Record<keyof UserSchema, string>>
+    Partial<Record<keyof UserInput, string>>
   >({});
 
   useEffect(() => {
@@ -52,9 +52,9 @@ export default function UserFormDialog({ open, onClose, onSave, user }: Props) {
       onSave(parsed);
     } catch (err) {
       if (err instanceof ZodError) {
-        const fieldErrors: Partial<Record<keyof UserSchema, string>> = {};
+        const fieldErrors: Partial<Record<keyof UserInput, string>> = {};
         err.errors.forEach(({ path, message }) => {
-          const field = path[0] as keyof UserSchema;
+          const field = path[0] as keyof UserInput;
           fieldErrors[field] = message;
         });
         setErrors(fieldErrors);

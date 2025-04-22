@@ -1,8 +1,8 @@
 import { Button, Flex, Form, Input, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { z } from "zod";
-import { userSchema } from "../schemas/userSchema";
-import { User } from "../service/userService";
+import { userSchema } from "shared";
+import { User } from "shared";
 
 interface UserFormProps {
   initialValues?: Partial<User>;

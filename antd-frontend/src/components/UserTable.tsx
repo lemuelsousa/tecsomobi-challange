@@ -1,6 +1,6 @@
 import { Button, Flex, Grid, message, Space, Table } from "antd";
 import React from "react";
-import { deleteUser, User } from "../service/userService";
+import { deleteUser, User } from "shared";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 const { Column } = Table;

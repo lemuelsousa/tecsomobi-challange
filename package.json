@@ -4,15 +4,19 @@
   "workspaces": [
     "backend",
     "antd-frontend",
-    "mui-frontend"
+    "mui-frontend",
+    "shared"
   ],
   "scripts": {
-    "dev:backend": "npm --workspace backend run dev",
+    "dev:backend": "npm --workspace shared run build && npm --workspace backend run dev",
     "dev:antd": "npm --workspace antd-frontend run dev",
     "dev:mui": "npm --workspace mui-frontend run dev",
-    "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev:antd\" \"npm run dev:mui\""
+    "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev:antd\" \"npm run dev:mui\"",
+    "build": "tsc -b",
+    "clean": "tsc -b --clean"
   },
   "devDependencies": {
-    "concurrently": "^8.0.0"
+    "concurrently": "^8.0.0",
+    "typescript": "^5.0.0"
   }
 }

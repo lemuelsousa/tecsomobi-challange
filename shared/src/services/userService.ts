@@ -1,16 +1,4 @@
-export interface User {
-  id?: number;
-  name: string;
-  email: string;
-  password: string;
-}
-
-export interface PaginatedUsers {
-  users: User[];
-  total: number;
-  page: number;
-  limit: number;
-}
+import { User, PaginatedUsers } from "../types/User";
 
 const API_URL = "http://localhost:3000/api/users";
 

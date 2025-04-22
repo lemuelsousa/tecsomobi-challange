@@ -7,7 +7,7 @@ import {
   deleteUser,
   ServiceError,
 } from "../services/userService";
-import { createUserSchema, updateUserSchema } from "../schemas/userSchema";
+import { createUserSchema, updateUserSchema } from "shared";
 
 export async function createUserHandler(
   req: Request,

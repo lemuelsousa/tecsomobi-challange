@@ -13,13 +13,8 @@ import {
   Button,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { User } from "../types/User";
-import {
-  getUsers,
-  createUser,
-  updateUser,
-  deleteUser,
-} from "../service/userService";
+import { User } from "shared";
+import { getUsers, createUser, updateUser, deleteUser } from "shared";
 import UserForm from "./UserForm";
 import { Edit, Delete } from "@mui/icons-material";
 

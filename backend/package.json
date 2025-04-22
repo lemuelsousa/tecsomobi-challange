@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "an user api that perform CRUD operations",
-  "main": "index.js",
+  "main": "src/app.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lemuelsousa/users-api.git"
@@ -18,7 +18,8 @@
     "better-sqlite3": "^11.9.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "zod": "^3.24.2"
+    "zod": "^3.24.2",
+    "shared": "*"
   },
   "devDependencies": {
     "@eslint/js": "^9.24.0",
@@ -37,7 +38,7 @@
   "scripts": {
     "start": "node dist/app.js",
     "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
-    "build": "tsc && npm run copy-schemas",
+    "build": "tsc -b ../shared && tsc && npm run copy-schemas",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "copy-schemas": "npx copyfiles -u 2 src/database/schemas/*.sql dist/database/",

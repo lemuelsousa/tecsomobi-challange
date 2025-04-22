@@ -2,7 +2,7 @@ import { Card, Flex, message } from "antd";
 import React, { useEffect, useState } from "react";
 import UserForm from "../components/UserForm";
 import UserTable from "../components/UserTable";
-import { createUser, getUsers, updateUser, User } from "../service/userService";
+import { createUser, getUsers, updateUser, User } from "shared";
 
 const UserPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
