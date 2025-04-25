@@ -25,9 +25,6 @@ export default function UserFormDialog({
   onSubmit,
   user,
 }: Props) {
-  console.log("user: ", user);
-  console.log("onSubmit: ", onSubmit);
-
   const [form, setForm] = useState<UserInput>({
     name: "",
     email: "",
@@ -43,7 +40,7 @@ export default function UserFormDialog({
       const { name, email, password } = user;
       setForm({ name, email, password });
     } else {
-      setForm({ name: "", email: "", password: "" });
+      clearForm();
     }
     setErrors({});
   }, [user]);
@@ -56,7 +53,7 @@ export default function UserFormDialog({
 
   const handleSubmit = () => {
     try {
-      const parsed = userSchema.parse(form);    
+      const parsed = userSchema.parse(form);
       onSubmit(parsed);
     } catch (err) {
       if (err instanceof ZodError) {
@@ -68,6 +65,10 @@ export default function UserFormDialog({
         setErrors(fieldErrors);
       }
     }
+  };
+
+  const clearForm = () => {
+    setForm({ name: "", email: "", password: "" });
   };
 
   return (
@@ -106,7 +107,14 @@ export default function UserFormDialog({
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancelar</Button>
+        <Button
+          onClick={() => {
+            onClose();
+            clearForm();
+          }}
+        >
+          Cancelar
+        </Button>
         <Button onClick={handleSubmit} variant="contained">
           {user ? "Atualizar" : "Salvar"}
         </Button>

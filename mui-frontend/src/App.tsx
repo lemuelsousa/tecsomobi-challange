@@ -3,7 +3,7 @@ import UserTable from "./components/UserTable";
 
 function App() {
   return (
-    <Container maxWidth="md">
+    <Container sx={{ mt: 8}} maxWidth="md">
       <UserTable />
     </Container>
   );

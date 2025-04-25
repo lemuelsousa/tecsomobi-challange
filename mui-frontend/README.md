@@ -53,8 +53,6 @@ http://localhost:5173
 ## 🚧 Melhorias Futuras
 [ ] Adicionar testes e2e
 
-[ ] Consertar alerts/messages
-
 ## 🧑‍💻 Autor
 
 Feito por [Lemuel de Sousa](https://github.com/lemuelsousa/)

@@ -1,22 +1,23 @@
+import { Delete, Edit } from "@mui/icons-material";
 import {
+  Box,
+  Button,
+  IconButton,
+  Pagination,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  IconButton,
-  Pagination,
-  Box,
   Typography,
-  Button,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { User } from "shared";
-import { getUsers, createUser, updateUser, deleteUser } from "shared";
+import { createUser, deleteUser, getUsers, updateUser, User } from "shared";
+import { useAlert } from "../hooks/useAlert";
+import AlertBox from "./AlertBox";
 import UserForm from "./UserForm";
-import { Edit, Delete } from "@mui/icons-material";
 
 export default function UserTable() {
   const [users, setUsers] = useState<User[]>([]);
@@ -25,6 +26,8 @@ export default function UserTable() {
   const [totalPages, setTotalPages] = useState(1);
   const [openForm, setOpenForm] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | undefined>();
+
+  const { show, message, severity, triggerAlert } = useAlert();
 
   const loadUsers = async () => {
     const data = await getUsers(page, limit);
@@ -40,28 +43,28 @@ export default function UserTable() {
     try {
       if (selectedUser?.id) {
         await updateUser(selectedUser.id, data);
-        alert("usuário atualizado com sucesso.");
+        triggerAlert("Usuário atualizado com sucesso.");
       } else {
         await createUser(data);
-        alert("usuário criado com sucesso.");
+        triggerAlert("Usuário criado com sucesso.");
       }
       setOpenForm(false);
       setSelectedUser(undefined);
       await loadUsers();
     } catch (error) {
-      alert(error);
+      triggerAlert(error.message, 3000, "error");
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (confirm("Tem certeza que deseja deletar este usuário?")) {
-      await deleteUser(id);
-      await loadUsers();
-    }
+    await deleteUser(id);
+    triggerAlert("Usuário deletado com sucesso.");
+    await loadUsers();
   };
 
   return (
     <Box>
+      <AlertBox show={show} message={message} severity={severity} />
       <Box display="flex" justifyContent="space-between" mb={2}>
         <Typography variant="h6">Gestão de usuários</Typography>
         <Button
